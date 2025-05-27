@@ -32,18 +32,18 @@ ax.set_xlim(p, T)
 ax.set_ylim(40, 180)
 ax.set_title('Retailer Orders vs. Customer Demand\n(Lead Time Accumulation)', fontsize=14)
 ax.set_xlabel('Time Period')
-ax.set_ylabel('units ordered')
+ax.set_ylabel('Units Ordered')
 ax.grid(False)
 fig_manager = plt.get_current_fig_manager()
 fig_manager.window.wm_geometry(f"+{100}+{100}")
 
-# Remove only the spines (border lines)
+# Remove border spines
 for spine in ax.spines.values():
     spine.set_visible(False)
 
 # Static customer demand
 ax.plot(x_smooth, demand_spline, 'k--', linewidth=2, label='Customer Demand')
-
+ax.legend(loc='upper right', frameon=True, facecolor='lightyellow', edgecolor='none')
 # Annotation for current lead time
 text_lead = ax.text(0.05, 0.9, '', transform=ax.transAxes, fontsize=12, bbox=dict(facecolor='white', alpha=0.8))
 
@@ -51,9 +51,13 @@ text_lead = ax.text(0.05, 0.9, '', transform=ax.transAxes, fontsize=12, bbox=dic
 plotted_leads = set()
 
 def update(frame):
+    if frame == -1:
+        # Initial delay frame: only show demand
+        #text_lead.set_text('Customer Demand Shown...')
+        return [text_lead]
+
     L = lead_times[frame]
 
-    # Prevent plotting the same lead time more than once
     if L in plotted_leads:
         return []
 
@@ -71,20 +75,24 @@ def update(frame):
 
     orders_spline = make_interp_spline(x, orders)(x_smooth)
 
-    # Plot only if not already done
-    line, = ax.plot(x_smooth, orders_spline, label=f'Orders (LeadTime={L})',linewidth=1.5)
+    # Plot orders
+    line, = ax.plot(x_smooth, orders_spline, label=f'Orders (LeadTime={L})', linewidth=1.5)
     plotted_leads.add(L)
 
-    # Optional annotation (can be enabled)
-    #text_lead.set_text(f'Lead Time Added: L = {L}')
-
-    #ax.legend(loc='upper right')
+    #text_lead.set_text(f'Lead Time: L = {L}')
     ax.legend(loc='upper right', frameon=True, facecolor='lightyellow', edgecolor='none')
 
     return [line, text_lead]
 
-# Animate
-ani = FuncAnimation(fig, update, frames=len(lead_times), interval=1500, blit=False, repeat=False)
+# Animate (include frame = -1 for delay)
+ani = FuncAnimation(
+    fig,
+    update,
+    frames=[-1] + list(range(len(lead_times))),
+    interval=1500,  # 1.5 seconds per frame
+    blit=False,
+    repeat=False
+)
 
 plt.tight_layout()
 plt.show()

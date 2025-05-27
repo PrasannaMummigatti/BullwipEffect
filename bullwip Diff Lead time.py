@@ -52,7 +52,8 @@ plt.title('Bullwhip Effect Magnitude vs. Moving Average Window Size (p)')
 plt.xlabel('Moving Average Window Size (p)')
 plt.ylabel('Var(Orders) / Var(Demand)')
 plt.legend(loc='upper right', frameon=True, facecolor='lightyellow', edgecolor='none')
-
+# Remove border spines
+plt.box(False)
 plt.gca().set_facecolor('lightyellow')
 plt.grid(True)
 plt.grid(False)
