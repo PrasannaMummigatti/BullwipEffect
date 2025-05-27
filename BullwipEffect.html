@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bullwhip Effect Simulation Explanation</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 900px;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #2a3f5f;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+<div><br />
+<h1><div>📦💥 Tiny demand changes. Massive overreactions. Welcome to the Bullwhip Effect.</div></h1>
+<br />
+<div>Remember the toilet paper panic of 2020? 🧻</div>
+<div>A small spike in customer demand &rarr; shelves wiped clean &rarr; manufacturers overwhelmed &rarr; suppliers scrambling.</div>
+<br />
+<div>That wasn&rsquo;t just panic-buying &mdash; it was the Bullwhip Effect in action.</div>
+<br />
+<div>🔍 In a classic paper, Chen, Drezner, Ryan &amp; Simchi-Levi explained why this happens &mdash; and backed it with math. They showed how simple forecasting and inventory policies can amplify demand signals as you move upstream in the supply chain.</div>
+<br />
+<div>💣 And the consequences?</div>
+<div>The Bullwhip Effect isn&rsquo;t just academic &mdash; it&rsquo;s a business threat:</div>
+<br />
+<div>🚚 Bloated inventories (followed by empty ones)</div>
+
+<div>⏱️ Delayed production &amp; overreactions</div>
+
+<div>📉 Poor service levels and planning chaos</div>
+
+<div>💸 Lost sales, wasted capacity, and broken trust</div>
+<br />
+<div>Even when everyone shares data and plays by the rules &mdash; the bullwhip doesn&rsquo;t vanish. It just snaps a little softer.</div>
+<br />
+<div>🎯 Want to soften the snap? 
+<div>✅ Use smoother, more robust forecasting</div>
+<div>✅ Shorten lead times where possible</div>
+<div>✅ Share demand data across the chain</div>
+<div>✅ Don&rsquo;t overreact to short-term noise</div>
+<br />
+<div>📖 &ldquo;Quantifying the Bullwhip Effect in a Simple Supply Chain&rdquo; &ndash; Management Science (2000)</div>
+<div>Still a must-read for anyone trying to tame the chaos &mdash; from TP to tech.</div>
+<br />
+<div>#SupplyChain #BullwhipEffect #InventoryManagement #Forecasting #CovidLessons #Logistics #DecisionScience #DemandPlanning #ToiletPaperCrisis</div>
+</div>
+
+<p><img src="BullwipEffect_GIF.gif"  alt="Bullwhip Effect Simulation" style="max-width: 100%; height: auto;"> </p>
+
+
+<p class="demoTitle">&nbsp;</p>
+<!-- Comments are visible in the HTML source only -->
+  
+
+<h1>📦 Bullwhip Effect Simulation: Calculation Overview</h1>
+
+<h2>1. Customer Demand (AR(1) Process)</h2>
+<p>Customer demand follows an autoregressive model:</p>
+<p>
+  \( D_t = \mu + r D_{t-1} + \epsilon_t \)
+</p>
+<ul>
+  <li><strong>\(\mu\)</strong>: Base demand level (e.g., 50 units)</li>
+  <li><strong>r</strong>: Correlation between time periods</li>
+  <li><strong>\(\epsilon_t\)</strong>: Random noise, normally distributed with standard deviation \(\sigma\)</li>
+</ul>
+
+<h2>2. Retailer's Forecasting</h2>
+<p>The retailer forecasts demand using a moving average over the last \(p\) periods and projects it for a lead time of \(L\):</p>
+
+<p><strong>Forecast of mean demand:</strong></p>
+<p>
+  \( \hat{D}_{t,L} = \left( \frac{1}{p} \sum_{i=1}^{p} D_{t-i} \right) \cdot L \)
+</p>
+
+<p><strong>Forecast of standard deviation:</strong></p>
+<p>
+  \( \hat{\sigma}_{t,L} = \text{std}(D_{t-p}, \dots, D_{t-1}) \cdot \sqrt{L} \)
+</p>
+
+<p><strong>Order-up-to level:</strong></p>
+<p>
+  \( y_t = \hat{D}_{t,L} + z \cdot \hat{\sigma}_{t,L} \)
+</p>
+<ul>
+  <li><strong>p</strong>: Forecast window size</li>
+  <li><strong>L</strong>: Lead time</li>
+  <li><strong>z</strong>: Safety factor (e.g., 1.65 for ~95% service level)</li>
+</ul>
+
+<h2>3. Retailer's Order Quantity</h2>
+<p>The order placed by the retailer follows an order-up-to policy:</p>
+<p>
+  \( q_t = y_t - y_{t-1} + D_{t-1} \)
+</p>
+<p>This ensures the inventory is brought up to the new level while accounting for last period’s sales.</p>
+
+<h2>4. Bullwhip Effect Quantification</h2>
+
+
+<p>The Bullwhip Effect is quantified by comparing the variance of orders to that of demand:</p>
+<p>
+  \( \text{Bullwhip Ratio} = \frac{\text{Var}(q_t)}{\text{Var}(D_t)} \)
+</p>
+<ul>
+  <li>If > 1: Bullwhip effect is present</li>
+  <li>If = 1: No amplification</li>
+  <li>If < 1: (Rare) occurs with extreme smoothing or negative correlation</li>
+</ul>
+
+<h2>Summary of Key Parameters</h2>
+<table border="1" cellpadding="6">
+  <thead>
+    <tr><th>Parameter</th><th>Description</th><th>Impact</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>\(\mu\)</td><td>Base demand level</td><td>Sets average demand</td></tr>
+    <tr><td>\(\sigma\)</td><td>Demand noise (volatility)</td><td>More randomness</td></tr>
+    <tr><td>r</td><td>Autocorrelation</td><td>Smoother (high r) vs. noisier (low r)</td></tr>
+    <tr><td>L</td><td>Lead time</td><td>Longer = greater uncertainty</td></tr>
+    <tr><td>p</td><td>Forecast window</td><td>Short = reactive, Long = smooth</td></tr>
+    <tr><td>z</td><td>Safety stock factor</td><td>Higher z = more conservative stock</td></tr>
+  </tbody>
+</table>
+<h1>📈 Bullwhip Effect: Relationship with Lead Time and Forecast Window</h1>
+
+<p>
+  In the paper <em>"Quantifying the Bullwhip Effect in a Simple Supply Chain"</em> (Chen et al., 2000), the authors derive a lower bound that shows how the bullwhip effect grows as a function of lead time \( L \), moving average forecast window size \( p \), and the demand autocorrelation parameter \( r \).
+</p>
+
+<h2>General Case (with AR(1) demand autocorrelation)</h2>
+<p>
+  \[
+  \frac{\text{Var}(q_t)}{\text{Var}(D_t)} \geq 1 + \left( \frac{2L}{p} + \frac{2L^2}{p^2} \right)(1 - r^p)
+  \]
+</p>
+
+<ul>
+  <li>\( L \): Lead time between order and delivery</li>
+  <li>\( p \): Number of past periods used in the moving average forecast</li>
+  <li>\( r \): AR(1) demand autocorrelation coefficient</li>
+</ul>
+
+<h2>Special Case (when \( r = 0 \))</h2>
+<p>
+  \[
+  \frac{\text{Var}(q_t)}{\text{Var}(D_t)} \geq 1 + \left( \frac{2L}{p} + \frac{2L^2}{p^2} \right)
+  \]
+</p>
+
+<p>
+  This version represents the case where demand is independent and identically distributed (i.i.d.) over time.
+</p>
+
+<h2>Interpretation</h2>
+<ul>
+  <li><strong>Higher \( L \)</strong> (longer lead time) increases the bullwhip effect significantly.</li>
+  <li><strong>Higher \( p \)</strong> (smoother forecasts) reduces the bullwhip effect.</li>
+  <li><strong>Positive \( r \)</strong> (correlated demand) mitigates bullwhip due to more predictable patterns.</li>
+</ul>
+
+<p>
+  This formula provides key insights for supply chain design and inventory policy tuning.
+</p>
+
+<img src="BullwipEffect_differentLeadtime.png" alt="Bullwhip Effect Simulation" style="max-width: 100%; height: auto;">
+<p><em> Python simulation and animation of the Bullwhip Effect.</em></p>
+<a href="animation2.py">Python Code 1 |</a>
+<a href="bullwip Diff Lead time.py">Python Code 2</a>
+</body>
+</html>
